@@ -3,7 +3,7 @@
 import RPi.GPIO as GPIO
 import time
 
-pin1 = 8
+pin1 = 18
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pin1,GPIO.OUT)
