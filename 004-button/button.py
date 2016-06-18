@@ -4,26 +4,43 @@
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BCM)
-vibPin=14
-ledPin=15
-GPIO.setup(vibPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(ledPin, GPIO.OUT)
-GPIO.output(ledPin, GPIO.LOW)
+#GPIO.setmode(GPIO.BCM)
+#vibPin=14
+#ledPin=15
+#GPIO.setup(vibPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(ledPin, GPIO.OUT)
+#GPIO.output(ledPin, GPIO.LOW)
 
-print "CTRL+C to stop"
+class Button(object):
+    status = "off"
+    vibPin = 14
+    ledPin = 15
 
-def printOutput(null):
-    print "Signal registered"
-    GPIO.output(ledPin, GPIO.HIGH)
-    time.sleep(1)
-    GPIO.output(ledPin, GPIO.LOW)
+    def printOutput(self,null):
+        print "Signal registered"
+        if self.status == "off":
+            GPIO.output(self.ledPin, GPIO.HIGH)
+            self.status = "on"
+        else:
+            GPIO.output(self.ledPin, GPIO.LOW)
+            self.status = "off"
         
-GPIO.add_event_detect(vibPin, GPIO.FALLING, callback=printOutput, bouncetime=100)
+    def run(self):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.vibPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.ledPin, GPIO.OUT)
+        GPIO.output(self.ledPin, GPIO.LOW)
+        GPIO.add_event_detect(self.vibPin, GPIO.FALLING, callback=self.printOutput, bouncetime=100)
 
-try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    GPIO.cleanup()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print "bye bye"
+            GPIO.cleanup()
+
+
+if __name__ == "__main__":
+    b = Button()
+    b.run()
 
