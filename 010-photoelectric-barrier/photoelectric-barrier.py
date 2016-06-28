@@ -4,7 +4,7 @@
 import RPi.GPIO as GPIO
 import time
 
-class Button(object):
+class PhotoelectricBarrier(object):
     status = "off"
     vibPin = 14
     ledPin = 15
@@ -23,7 +23,7 @@ class Button(object):
         GPIO.setup(self.vibPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.ledPin, GPIO.OUT)
         GPIO.output(self.ledPin, GPIO.LOW)
-        GPIO.add_event_detect(self.vibPin, GPIO.FALLING, callback=self.printOutput, bouncetime=100)
+        GPIO.add_event_detect(self.vibPin, GPIO.RISING, callback=self.printOutput, bouncetime=100)
 
         try:
             while True:
@@ -34,6 +34,6 @@ class Button(object):
 
 
 if __name__ == "__main__":
-    b = Button()
-    b.run()
+    pb = PhotoelectricBarrier()
+    pb.run()
 
