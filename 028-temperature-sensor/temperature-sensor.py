@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 # Benutzte Variablen werden initialisiert
-delayTime = 0.2
+delayTime = 1
 
 # Adresszuweisung ADS1x15 ADC
 

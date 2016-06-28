@@ -24,7 +24,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-delayTime = 0.5
+delayTime = 1
 
 ADS1115 = 0x01  # 16-bit
 
