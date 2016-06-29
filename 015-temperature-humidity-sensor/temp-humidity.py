@@ -12,6 +12,7 @@ sleeptime = 2
 # Sensor should be set to Adafruit_DHT.DHT11,
 # Adafruit_DHT.DHT22, or Adafruit_DHT.AM2302.
 DHTSensor = Adafruit_DHT.DHT11
+#DHTSensor = Adafruit_DHT.AM2302
 
 # Hier kann der Pin deklariert werden, an dem das Sensormodul angeschlossen ist
 GPIO_Pin = 14
