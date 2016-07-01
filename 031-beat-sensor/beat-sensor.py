@@ -1,39 +1,21 @@
-#!/usr/bin/python
-# coding=utf-8
-
 import RPi.GPIO as GPIO
 import time
 
-class BeatSensor(object):
-    status = "off"
-    vibPin = 14
-    ledPin = 15
+GPIO.setmode(GPIO.BCM)
 
-    def printOutput(self,null):
-        print "Signal registered"
-        if self.status == "off":
-            GPIO.output(self.ledPin, GPIO.HIGH)
-            self.status = "on"
-        else:
-            GPIO.output(self.ledPin, GPIO.LOW)
-            self.status = "off"
+GPIO_PIN = 14
+GPIO.setup(GPIO_PIN, GPIO.IN)
 
-    def run(self):
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.vibPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.ledPin, GPIO.OUT)
-        GPIO.output(self.ledPin, GPIO.LOW)
-        GPIO.add_event_detect(self.vibPin, GPIO.FALLING, callback=self.printOutput, bouncetime=100)
+print "STRG+C to stop"
 
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print "bye bye"
-            GPIO.cleanup()
+def ausgabeFunktion(null):
+    print("Signal erkannt")
 
+GPIO.add_event_detect(GPIO_PIN, GPIO.FALLING, callback=ausgabeFunktion, bouncetime=100)
 
-if __name__ == "__main__":
-    bs = BeatSensor()
-    bs.run()
+try:
+    while True:
+        time.sleep(1)
 
+except KeyboardInterrupt:
+    GPIO.cleanup()
