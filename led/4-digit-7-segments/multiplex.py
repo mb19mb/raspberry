@@ -22,7 +22,12 @@ class Multiplexer(object):
     dig4 = 22
     digits = [dig4, dig3, dig2, dig1]
 
+    # time in s to display one character
+    timePerChar = 0.25
+
     displayTime = 0.0025
+
+    input = ''
 
     """ init segment and digit pins"""
     def __init__(self):
@@ -43,10 +48,16 @@ class Multiplexer(object):
         try:
             while True:
                 try:
-                    input = raw_input("Input:")
-                    self.printWord(input)
+                    if self.input == '': self.input = raw_input("Input:")
+                    self.printWord(self.input)
                 except KeyError:
                     print "unknown character"
+                except KeyboardInterrupt:
+                    self.initPins(self.segments, GPIO.OUT, False)  # all segments off
+                    self.initPins(self.digits, GPIO.OUT, True)  # all digits off
+                    self.input = ''
+                    input = raw_input("To stop programm press 'c', otherwise another key: ")
+                    if input == 'c': raise KeyboardInterrupt
 
         except KeyboardInterrupt:
             print "cleanup... bye"
@@ -66,12 +77,11 @@ class Multiplexer(object):
             w = word[l:l + 4]
 
             # if inputword is too short, we append 1 to 3 spaces at the end
-            if len(w) < 2: w += ' '
-            if len(w) < 3: w += ' '
-            if len(w) < 4: w += ' '
+            diff = len(w) - 4
+            if diff < 0: w += abs(diff) * ' '
 
             # print w with multiplex technique
-            self.multiplex(w)
+            self.multiplex(w, self.timePerChar)
 
     """
     display word with 4 character
