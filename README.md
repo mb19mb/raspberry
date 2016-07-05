@@ -1,27 +1,42 @@
 # Raspberry/Arduino Sensorkit
-## 001 Temperatur Sensor Modul
-9-12bit genaue Temperaturmessung im Messbereich von -55°C bis +125°C
-Chipsatz: [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
-1-Wire Protokoll
 
-## 002 Erschütterungs-Schalter Modul
-Schließt Kontakt zwischen Eingangspins bei Erschütterung
-
-## 003 Hall Magnetfeld-Sensor Modul
-Beim Sensorkontakt mit einem Magnetfeld schaltet der Transistor. 
-Analoger Spannungswert kann am Signalausgang gemessen werden
-Chipsatz: [A3141](http://www.allegromicro.com/~/media/Files/Datasheets/A3141-2-3-4-Datasheet.ashx)
-Sensortyp: Hall Effect Transistor/Schalter
-
-## 004 Taster-Modul
-Auf Tastendruck werden Signalausgänge kurzgeschlossen
-
-## 005 Infrarot Transmitter Modul
-Emitiert Licht im infraroten Bereich (Wellenlänge: 940nm)
-
-V= 1,1V
-I= 20mA
-
-###### Vorwiderstände
-R = 120 Ohm (Raspberry-Pi) (3,3V)
-R = 220 Ohm (Arduino) (5V)
+1 Temperatur Sensor Modul
+2 Erschütterungs-Schalter Modul
+3 Hall Magnetfeld-Sensor Modul
+4 Taster-Modul
+5 Infrarot Transmitter Modul
+6 Passives Piezo-Buzzer Modul
+9 RGB LED SMD Modul
+10 Lichtschranken-Modul
+11 2-Farben [Rot+Grün] 5mm LED Modul
+12 Aktives Piezo-Buzzer Modul
+13 Temperatur-Sensor Modul
+15 Kombi-Sensor Temperatur+Feuchtigkeit
+16 RGB 5mm LED Modul
+17 Neigungsschalter Modul
+18 Fotowiderstand Modul
+19 5V Relais Modul
+20 Neigungs-Schalter Modul
+21 Mini Magnet Reed Modul
+22 Infrarot Receiver Modul
+23 Joystick Modul (XY-Achsen)
+24 Linear magnetic Hall Sensor
+25 Reed Modul
+26 Flamen-Sensor Modul
+27 Magic Light Cup Modul
+28 Temperatur Sensor Modul (Thermistor)
+29 2-Farben Rot+Grün 3mm LED Modul
+31 Klopf-Sensor Modul
+32 Hindernis Detektor Modul
+33 Tracking Sensor Modul
+34 7 Farben LED Flash-Modul
+35 Bihor Magnet Sensor Modul
+36  Metall-Touchsensor Modul
+37 Mikrofon Sensor Modul hohe Empfindlichkeit
+38 Mikrofon Sound Sensor Modul
+39 Herzschlag Sensor Modul
+40 Kodierter Drehschalter (Rotary Encoder)
+50 Ultraschallabstandssensor
+51 Voltage Translator / Level Shifter
+52 Drucksensor / Temperatursensor BMP180
+53 Analog Digital Converter
