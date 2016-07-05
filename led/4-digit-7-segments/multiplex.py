@@ -1,154 +1,108 @@
 #!/usr/bin/python
 import RPi.GPIO as GPIO
 import time
+import characterMatrix as cm
 
-GPIO.setmode(GPIO.BCM)
+class Multiplexer(object):
+    # define associated pins to segments
+    segA = 14
+    segB = 15
+    segC = 18
+    segD = 23
+    segE = 24
+    segF = 25
+    segG = 8
+    segH = 7
+    segments = [segA, segB, segC, segD, segE, segF, segG, segH]
 
-segA = 14
-segB = 15
-segC = 18
-segD = 23
-segE = 24
-segF = 25
-segG = 8
-segH = 7
-segments = [segA, segB, segC, segD, segE, segF, segG, segH]
+    # define associated pins to digits
+    dig1 = 10
+    dig2 = 11
+    dig3 = 9
+    dig4 = 22
+    digits = [dig4, dig3, dig2, dig1]
 
-dig1 = 10
-dig2 = 11
-dig3 = 9
-dig4 = 22
+    displayTime = 0.0025
 
-#digits = [dig1, dig2, dig3, dig4]
-digits = [dig4, dig3, dig2, dig1]
+    """ init segment and digit pins"""
+    def __init__(self):
+        GPIO.setmode(GPIO.BCM)
+        self.initPins(self.segments, GPIO.OUT, False)
+        self.initPins(self.digits, GPIO.OUT, True)
 
+    """ init segment and digit pins """
+    def initPins(self, pinList = [], direction = 0, status = False):
+        # set GPIO direction IN(1) or OUT(0) for every pin in list
+        # set pin output True or False
+        for pin in pinList:
+            GPIO.setup(pin, direction)
+            GPIO.output(pin, status)
 
-characterMatrix = {
-    "A": [1, 1, 1, 0, 1, 1, 1, 0],
-    "B": [1, 1, 1, 1, 1, 1, 1, 0],
-    "C": [1, 0, 0, 1, 1, 1, 0, 0],
-    "D": [1, 1, 1, 1, 1, 1, 0, 1],
-    "E": [1, 0, 0, 1, 1, 1, 1, 0],
-    "F": [1, 0, 0, 0, 1, 1, 1, 0],
-    "G": [1, 0, 1, 1, 1, 1, 1, 1],
-    "H": [0, 1, 1, 0, 1, 1, 1, 0],
-    "I": [0, 1, 1, 0, 0, 0, 0, 0],
-    "J": [0, 0, 0, 0, 0, 0, 0, 1],
-
-    "K": [0, 0, 0, 0, 0, 0, 0, 1],
-    "L": [0, 0, 0, 1, 1, 1, 0, 0],
-    "M": [0, 0, 0, 0, 0, 0, 0, 1],
-    "N": [0, 0, 0, 0, 0, 0, 0, 1],
-    "O": [1, 1, 1, 1, 1, 1, 0, 0],
-
-    "P": [1, 1, 0, 0, 1, 1, 1, 0],
-    "Q": [1, 1, 1, 1, 1, 1, 0, 1],
-    "R": [0, 0, 0, 0, 0, 0, 0, 1],
-    "S": [1, 0, 1, 1, 0, 1, 1, 1],
-    "T": [0, 0, 0, 0, 0, 0, 0, 1],
-
-    "U": [0, 1, 1, 1, 1, 1, 0, 0],
-    "V": [0, 0, 0, 0, 0, 0, 0, 1],
-    "W": [0, 0, 0, 0, 0, 0, 0, 1],
-    "X": [0, 0, 0, 0, 0, 0, 0, 1],
-    "Y": [0, 1, 1, 1, 0, 1, 1, 1],
-    "Z": [1, 1, 0, 1, 1, 0, 1, 1],
-
-    "0": [1, 1, 1, 1, 1, 1, 0, 0],
-    "1": [0, 1, 1, 0, 0, 0, 0, 0],
-    "2": [1, 1, 0, 1, 1, 0, 1, 0],
-    "3": [1, 1, 1, 1, 0, 0, 1, 0],
-    "4": [0, 1, 1, 0, 0, 1, 1, 0],
-    "5": [1, 0, 1, 1, 0, 1, 1, 0],
-    "6": [1, 0, 1, 1, 1, 1, 1, 0],
-    "7": [1, 1, 1, 0, 0, 0, 0, 0],
-    "8": [1, 1, 1, 1, 1, 1, 1, 0],
-    "9": [1, 1, 1, 1, 0, 1, 1, 0],
-    " ": [0, 0, 0, 0, 0, 0, 0, 0],
-}
-
-def printChar(char, digit, delay = 0.25):
-
-    # digit on
-    GPIO.output(digit, False)
-
-    # print char
-    charIndex = characterMatrix[char.upper()]
-    for index in range(0, len(segments)):
-        segment = segments[index]
-        segmentStatus = charIndex[index]
-        GPIO.output(segment, segmentStatus)
-
-    time.sleep(delay)
-
-    # digit off
-    GPIO.output(digit, True)
-
-
-def initPins(pinList, direction, status):
-    for pin in pinList:
-        GPIO.setup(pin, direction)
-        GPIO.output(pin, status)
-
-
-def multiplex2(c = '', dig = 1, delay = 0.0025):
-    ############
-    # digit on
-    GPIO.output(dig, False)
-
-    # print char
-    charIndex = characterMatrix[c.upper()]
-    for index in range(0, len(segments)):
-        segment = segments[index]
-        segmentStatus = charIndex[index]
-        GPIO.output(segment, segmentStatus)
-
-    # wait
-    time.sleep(delay)
-
-    # digit off
-    GPIO.output(dig, True)
-
-
-def printWord(word = ''):
-    word = "   " + word
-    w = []
-    for l in range(0, len(word)):
-        offset = 3
-        if (l + 1 < len(word)): offset = 2
-        if (l + 2 < len(word)): offset = 3
-        if (l + 3 < len(word)): offset = 4
-
-        w = word[l:l + offset]
-
-        if len(w) < 2: w += ' '
-        if len(w) < 3: w += ' '
-        if len(w) < 4: w += ' '
-
-        # multiplex
-        for r in range(0,40):
-            for i in range(0,4):
-                multiplex2(w[i], digits[i])
-
-
-initPins(segments, GPIO.OUT, False)
-initPins(digits, GPIO.OUT, True)
-
-#GPIO.output(22, 0)
-#for c in 'abcdefghijklmnopqrstuvwxyz0123456789':
-#    printChar(c)
-#    time.sleep(0.1)
-
-try:
-    while True:
+    """ read user input and print it out to LED display"""
+    def main(self):
         try:
-            input = raw_input("Input:")
-            #printChar(input, dig2)
-            printWord(input)
-        except KeyError:
-            print "unknown character"
+            while True:
+                try:
+                    input = raw_input("Input:")
+                    self.printWord(input)
+                except KeyError:
+                    print "unknown character"
 
-except KeyboardInterrupt:
-    GPIO.cleanup()
+        except KeyboardInterrupt:
+            print "cleanup... bye"
+            GPIO.cleanup()
 
-GPIO.cleanup()
+    """
+    iterates the word and print current + next 3 characters out to LED display
+    """
+    def printWord(self, word=''):
+        w = [] # helper list, which includes the 4 characters of the word to display
+
+        word = "   " + word # to start output on the right side of LED display, we prepend three spaces to the input.
+
+        for l in range(0, len(word)):
+
+            # get four characters from inputword
+            w = word[l:l + 4]
+
+            # if inputword is too short, we append 1 to 3 spaces at the end
+            if len(w) < 2: w += ' '
+            if len(w) < 3: w += ' '
+            if len(w) < 4: w += ' '
+
+            # print w with multiplex technique
+            self.multiplex(w)
+
+    """
+    display word with 4 character
+        exact one character is shown at one time
+        we just switch beetween digit1 to digit4 as fast as human eyes won't recognise the change
+    """
+    def multiplex(self, w, timePerChar = 1):
+        # calculate number of iterations, based on the timePerChar parameter
+        iterCount = int(timePerChar / (4 * self.displayTime))
+        for r in range(0, iterCount):
+            for n in range(0, 4):
+                self.printChar(w[n], self.digits[n], self.displayTime) # display the nthd char on the nthd digit
+
+    """ display char on digit for delay seconds"""
+    def printChar(self, char, digit, delay = 0.0025):
+        # digit on
+        GPIO.output(digit, False)
+
+        # print char
+        charIndex = cm.characterMatrix[char.upper()]
+        for index in range(0, len(self.segments)):
+            segment = self.segments[index]
+            segmentStatus = charIndex[index]
+            GPIO.output(segment, segmentStatus)
+
+        time.sleep(delay)
+
+        # digit off
+        GPIO.output(digit, True)
+
+
+if __name__ == "__main__":
+    m = Multiplexer()
+    m.main()
