@@ -11,16 +11,17 @@ V(blau]= 2,8V
 I= 20mA
 
 ## Vorwiderstände:
-R(gruen)= 100 Ohm  (3,3V)
+##### 3.3V
+R(gruen)= 100 Ohm 
 
-R(rot)= 180 Ohm (3,3V)
+R(rot)= 180 Ohm
 
-R(blau)= 100Ohm (3,3V)
+R(blau)= 100 Ohm
 
+##### 5V
+R(gruen)= 100 Ohm
 
-R(gruen)= 100 Ohm  (5V)
+R(rot)= 180 Ohm
 
-R(rot)= 180 Ohm (5V)
-
-R(blau)= 100Ohm (5V)
+R(blau)= 100 Ohm
 
