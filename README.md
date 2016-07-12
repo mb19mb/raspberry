@@ -1,4 +1,6 @@
-# Raspberry/Arduino Sensorkit
+# Raspberry/Arduino 
+
+## Sensorkit
 
 - 1 Temperatur Sensor Modul
 - 2 Erschütterungs-Schalter Modul
@@ -40,3 +42,13 @@
 - 51 Voltage Translator / Level Shifter
 - 52 Drucksensor / Temperatursensor BMP180
 - 53 Analog Digital Converter
+
+## LED
+- 4-Digit-7-Segments
+- 7 Segment-LED 5161AS
+- easyLED example
+- LED LightShow
+- LED PulseWideModulation
+
+## ServoMotor
+- TowerPro MicroServo SG90
