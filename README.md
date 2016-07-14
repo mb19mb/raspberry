@@ -56,3 +56,6 @@
 ## PushButton
 - example
 - on/off permanent state
+
+## IR-Camera
+- HowTo
