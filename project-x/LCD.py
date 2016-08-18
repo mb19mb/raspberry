@@ -49,7 +49,7 @@ class LCD(object):
     LCD_LINE_4 = 0xD4  # LCD RAM address for the 4th line
 
     LCD_BACKLIGHT = 0x08  # On
-    # LCD_BACKLIGHT = 0x00  # Off
+    LCD_BACKLIGHT_OFF = 0x00  # Off
 
     ENABLE = 0b00000100  # Enable bit
 
@@ -110,20 +110,22 @@ class LCD(object):
       for i in range(self.LCD_WIDTH):
           self.lcd_byte(ord(message[i]),self.LCD_CHR)
 
-    def main(self):
+    def main(self, firstLine="", scndLine =""):
       # Main program block
 
       # Initialise display
-      self.lcd_init()
+      #self.lcd_init()
 
-      while True:
+      #while True:
 
         # Send some test
-        self.lcd_string("RPiSpy         <", self.LCD_LINE_1)
-        self.lcd_string("I2C LCD        <", self.LCD_LINE_2)
+      # self.lcd_string("RPiSpy         <", self.LCD_LINE_1)
+      # self.lcd_string("I2C LCD        <", self.LCD_LINE_2)
+      self.lcd_string(firstLine, self.LCD_LINE_1)
+      self.lcd_string(scndLine, self.LCD_LINE_2)
 
-        time.sleep(3)
-
+      #time.sleep(3)
+      """
         # Send some more text
         self.lcd_string(">         RPiSpy", self.LCD_LINE_1)
         self.lcd_string(">        I2C LCD", self.LCD_LINE_2)
@@ -135,14 +137,17 @@ class LCD(object):
         self.lcd_string(">        I2C LCD", self.LCD_LINE_2)
 
         time.sleep(3)
+      """
 
 
 if __name__ == '__main__':
-  lcd = LCD()
-  try:
-    lcd.main()
-  except KeyboardInterrupt:
-    pass
-  finally:
-    lcd.lcd_byte(0x01, lcd.LCD_CMD)
+    lcd = LCD()
+    try:
+        while True:
+            lcd.main()
+            time.sleep(3)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        lcd.lcd_byte(0x01, lcd.LCD_CMD)
 
