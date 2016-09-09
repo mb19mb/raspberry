@@ -2,6 +2,7 @@
 # coding=utf-8
 
 from DHTSensor import DHTSensor
+from Button import Button
 from LED import LED
 from Dispatcher import Dispatcher
 from LCD import LCD
@@ -25,6 +26,9 @@ lcd = LCD()
 
 dispatcher = Dispatcher(d11, d22, ledRed, ledGreen, lcd)
 
+button = Button()
+button.run()
+
 try:
 
     while True:
@@ -33,10 +37,10 @@ try:
         time.sleep(delay)
 
 except KeyboardInterrupt:
-    GPIO.cleanup()
     print "done"
 finally:
     lcd.lcd_byte(0x01, lcd.LCD_CMD)
+    GPIO.cleanup()
 
 
 
