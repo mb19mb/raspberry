@@ -2,6 +2,9 @@
 # coding=utf-8
 
 import Adafruit_DHT
+from SensorReadException import SensorReadException
+from time import gmtime, strftime
+
 
 class DHTSensor(object):
 
@@ -10,15 +13,14 @@ class DHTSensor(object):
     pin                 = 14
     DEBUG               = False
     currentTemp         = None
-    previousTemp        = -100.0
+    temperature          = -100.0
     hasSensorReadError  = False
-    registerDelta       = 0.5
+    tempDelta       = 0.5
     hasDeltaChange      = False
 
-
-    def __init__(self, pin, sensorType = "DHT11", debug = False):
-        self.DEBUG = debug
-
+    """
+    """
+    def __init__(self, pin, sensorType = 'DHT11', debug = False):
         if pin is None:
             raise Exception('Pin required')
 
@@ -29,41 +31,78 @@ class DHTSensor(object):
         if sensorType == 'DHT22': self.sensorType = Adafruit_DHT.DHT22
 
         self.pin = pin
+        self.DEBUG = debug
+
+    """
+    """
+    def readFromSensor(self):
+
+        humidity, temp = Adafruit_DHT.read_retry(self.sensorType, self.pin)
+
+        self.hasSensorReadError = True # default
+        if temp is None:
+            raise SensorReadException()
+
+        self.currentTemp = temp
+        self.hasSensorReadError = False
 
 
-    def read(self):
-        h, temp = Adafruit_DHT.read_retry(self.sensorType, self.pin)
+    """
+    """
+    def readTemp(self):
+        # try reading from sensor (max. 3 times)
+        count = 0
+        while count < 3 :
+            count += 1
+            try:
+                self.readFromSensor()
+            except SensorReadException:
+                self.debug('DHT%s - Fehler beim Auslesen... Starte neu ...' % self.sensorType)
+                time.sleep(2)  # sensor need some surcease
 
-        if temp is not None:
-            self.debug("DHT%s: Temp = %f°C"%(self.sensorType, temp))
-            self.currentTemp = temp
-            self.hasSensorReadError = False
-            if abs(self.previousTemp - self.currentTemp) >= self.registerDelta:
-                self.previousTemp = self.currentTemp
-            print self.deltaChange()
-        else:
-            self.hasSensorReadError = True
-            self.debug('DHT%s - Fehler beim Auslesen.' % self.sensorType)
+            if not self.hasSensorReadError: break # measurement successful
 
 
+        if self.hasSensorReadError: return #@todo wasnun?
+
+        # only temperature changes more than configured delta will be registered
+        if self.deltaChange() >= self.tempDelta:
+            self.temperature = self.currentTemp
+
+        self.debug(self)
+
+    """
+    """
     def deltaChange(self):
-        return abs(self.previousTemp - self.currentTemp)
+        return abs(self.temperature - self.currentTemp)
 
-
+    """
+    """
     def debug(self, msg):
         if self.DEBUG is False: return ''
         print msg
+
+    """
+    """
+    def __str__(self):
+        msg = ""
+        #msg = "\t%s\n" % strftime("%H:%M:%S", gmtime())
+        msg += "\tSensorType: DHT-%s\n" % self.sensorType
+        msg += "\tTemperatur: %2.2f °C\n" % self.temperature
+        return msg
+
 
 if __name__ == '__main__':
     import time
 
     try:
-        d11 = DHTSensor(14, 'DHT11', True)
-        # d12 = DHTSensor(15, 'DHT22', False)
+        #d11 = DHTSensor(14, 'DHT11', True)
+        d22 = DHTSensor(15, 'DHT22', True)
         while True:
-            d11.read()
-
-            #d12.read()
+            #d11.readTemp()
+            #print d11
+            d22.readTemp()
+            print d22
             time.sleep(5)
     except KeyboardInterrupt:
         print "done"

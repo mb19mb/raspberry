@@ -5,12 +5,15 @@ import RPi.GPIO as GPIO
 import time
 
 class Relais(object):
-    pin = 0
+    pin = 17
     delay = 5
     isConnectedThrough = False
     hasError = False
 
-    def __init__(self, pin = 17, delay = 5):
+    def __init__(self, pin, delay = 30):
+        if pin is None:
+            raise Exception('Pin required')
+
         self.pin = pin
         self.delay = delay
         self.initGPIO()
