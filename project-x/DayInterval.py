@@ -4,6 +4,7 @@
 import time
 from datetime import datetime
 from Partition import Partition
+
 class DayInterval(object):
 
     timestamp = 0
@@ -12,23 +13,19 @@ class DayInterval(object):
     numberPartitions = 4
     partitions = []
 
+    diDateTime = None
+
     """
-    returns currents partition of the day:
+    returns currents partition of the day (0,1,2,3):
         [ [00:00 - 05:59], [06:00 - 11:59], [12:00 - 17:59], [18:00 - 23:59] ]
     """
     def getCurrentPartition(self):
-        d1 = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
-        d2 = datetime.today()
-        d3 = d2-d1
+        d1 = datetime(self.diDateTime.year, self.diDateTime.month, self.diDateTime.day)
+        d3 = self.diDateTime - d1
         return int(round(d3.seconds / self.fetchDelta()))
 
     def fetchDelta(self):
         return 60 * 60 * 24 / self.numberPartitions
-
-    def __init__(self, timestamp = 0):
-        self.timestamp = timestamp
-        self.currentDate = time.strftime("%Y/%m/%d")
-        self.initPartitions()
 
     def initPartitions(self):
         i = 0
@@ -44,6 +41,21 @@ class DayInterval(object):
         if self.currentDate == time.strftime("%d/%m/%Y"): return # nothing to do
         self.initPartitions()
 
+    def __init__(self, timestamp=0):
+        self.timestamp = timestamp
+        self.currentDate = time.strftime("%Y/%m/%d")
+        self.diDateTime = datetime(
+                    datetime.today().year,
+                    datetime.today().month,
+                    datetime.today().day,
+                    datetime.today().hour,
+                    datetime.today().minute,
+                    datetime.today().second
+        )
+
+        self.initPartitions()
+
+
 if __name__ == "__main__":
     d = DayInterval()
-    d.getCurrentPartition()
+    print d.getCurrentPartition()
