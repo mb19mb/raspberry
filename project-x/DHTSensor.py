@@ -74,7 +74,7 @@ class DHTSensor(object):
     """
     """
     def deltaChange(self):
-        return abs(self.temperature - self.currentTemp)
+        return abs(self.getTemperature - self.currentTemp)
 
     """
     """
@@ -88,9 +88,11 @@ class DHTSensor(object):
         msg = ""
         #msg = "\t%s\n" % strftime("%H:%M:%S", gmtime())
         msg += "\tSensorType: DHT-%s\n" % self.sensorType
-        msg += "\tTemperatur: %2.2f °C\n" % self.temperature
+        msg += "\tTemperatur: %2.2f °C\n" % self.getTemperature()
         return msg
 
+    def getTemperature(self):
+        return self.temperature
 
 if __name__ == '__main__':
     import time

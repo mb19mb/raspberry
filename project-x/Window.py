@@ -29,11 +29,22 @@ class Window(object):
         self.dayInterval    = DayInterval()
 
 
+    """
+    Open window if the following conditions are true
+    """
     def openWindow(self):
-        # window already open?
+        # check preconditions
+
+        # 1: window already open?
         if self.windowStatus == self.WINDOW_OPEN: return # nothing to do
 
-        # check preconditions
+        # 2: max. window open time reached?
+
+        # 3: temperature outside more than n degrees
+        self.determineTemperature()
+        if self.fetchTemperature("out") > -10: return # todo define constants
+
+        # 4: temperature outside less than inside
         if not self.checkTemperature(): return # nothing to do
 
         # self.logger.write("open window")
@@ -45,17 +56,27 @@ class Window(object):
     Partition one day in m pieces. In every partition the window should be open maximum n minutes
     """
     def checkWindowOpenIntervall(self):
-
         pass
+
+
+    def determineTemperature(self):
+        self.tempIn.readTemp()
+        self.tempOut.readTemp()
+
+
+    def fetchTemperature(self, type = "in"):
+        if self.tempIn.hasSensorReadError or self.tempOut.hasSensorReadError:
+            raise Exception("fail") # @todo ausnamhebehandlung
+
+        if type == "in": return self.tempIn.temperature
+        return self.tempOut.temperature
+
 
     """
     Temperature inside must be higher than outside
         -> if it returns True, otherwhise False
     """
     def checkTemperature(self):
-        self.tempIn.readTemp()
-        self.tempOut.readTemp()
-
         if self.tempIn.hasSensorReadError or self.tempOut.hasSensorReadError:
             return False
 
