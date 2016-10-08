@@ -25,6 +25,7 @@ class LED(object):
 
     def off(self):
         if not self.status: return # nothing to do
+        GPIO.setmode(GPIO.BCM)
         GPIO.output(self.pin, GPIO.LOW)
         self.status = False # means 'off'
 
@@ -36,14 +37,16 @@ class LED(object):
 
 
 if __name__ == '__main__':
+
+    delay = 2
+
     ledRed = LED(23)
     ledGreen = LED(24)
 
     ledRed.on()
-    time.sleep(1)
+    time.sleep(delay)
     ledRed.off()
 
-    time.sleep(1)
     ledGreen.on()
-    time.sleep(1)
+    time.sleep(delay)
     ledGreen.off()
