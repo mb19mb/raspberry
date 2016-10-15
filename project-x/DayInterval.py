@@ -27,11 +27,13 @@ class DayInterval(object):
         d3 = self.diDateTime - d1
         return int(round(d3.seconds / self.fetchDelta()))
 
-
+    """
+    """
     def fetchDelta(self):
         return 60 * 60 * 24 / self.numberPartitions
 
-
+    """
+    """
     def initPartitions(self):
         i = 0
         self.partitions = []
@@ -46,7 +48,8 @@ class DayInterval(object):
         if self.currentDate == time.strftime("%d/%m/%Y"): return # nothing to do
         self.initPartitions()
 
-
+    """
+    """
     def __init__(self, timestamp=0):
         self.timestamp = timestamp
         self.currentDate = time.strftime("%Y/%m/%d")

@@ -8,18 +8,13 @@ class Window(object):
     WINDOW_OPEN     = "open"
     WINDOW_CLOSED   = "closed"
 
+    MAX_NEGATIVE_OUTSIDE_TEMPERATURE = -10
+
     windowStatus = WINDOW_CLOSED
 
     tempIn, tempOut = None, None
     logger = None
     dayInterval = None
-
-    def main(self):
-        # prüfe ob fenster geschlossen werden muss
-        self.closeWindow()
-        # prüfe ob fenster geoeffnet werden muss
-        self.openWindow()
-
 
     def __init__(self, tempIn, tempOut):
         self.windowStatus   = self.WINDOW_CLOSED
@@ -34,20 +29,45 @@ class Window(object):
     """
     def openWindow(self):
         # check preconditions
-
         # 1: window already open?
-        if self.windowStatus == self.WINDOW_OPEN: return # nothing to do
+        if self.checkWhetherWindowIsOpen(): return False
 
+        if self.checkTemperaturePreconditionsOpenWindow():
+            print "oeffne fenster"
+            return
+
+        print "fenster wird nicht geoeffnet"
+
+
+    """
+    """
+    def checkTemperaturePreconditionsOpenWindow(self):
         # 2: max. window open time reached?
 
-        # 3: temperature outside more than n degrees
+        # Eigentliche Temperaturabfrage
+        # Temperatur abfragen
         self.determineTemperature()
-        if self.fetchTemperature("out") > -10: return # todo define constants
 
-        # 4: temperature outside less than inside
-        if not self.checkTemperature(): return # nothing to do
+        # check sensorerrors
+        if self.tempIn.hasSensorReadError or self.tempOut.hasSensorReadError:
+            return False
 
-        # self.logger.write("open window")
+        # Max. negative Außentemperatur unterschritten? Fenster bleibt zu
+        if self.fetchTemperature("out") <= self.MAX_NEGATIVE_OUTSIDE_TEMPERATURE: return False
+
+        # Temperature inside must be higher than outside -> if it returns True, otherwhise False
+        if self.tempOut.getTemperature() > self.tempIn.getTemperature():
+            return False
+
+        return True
+
+
+    """
+    """
+    def checkWhetherWindowIsOpen(self):
+        if self.windowStatus == self.WINDOW_OPEN: return True
+        return False
+
 
     def closeWindow(self):
         pass
@@ -68,22 +88,11 @@ class Window(object):
         if self.tempIn.hasSensorReadError or self.tempOut.hasSensorReadError:
             raise Exception("fail") # @todo ausnamhebehandlung
 
-        if type == "in": return self.tempIn.temperature
-        return self.tempOut.temperature
+        if type == "in": return self.tempIn.getTemperature()
+        return self.tempOut.getTemperature()
 
 
-    """
-    Temperature inside must be higher than outside
-        -> if it returns True, otherwhise False
-    """
-    def checkTemperature(self):
-        if self.tempIn.hasSensorReadError or self.tempOut.hasSensorReadError:
-            return False
 
-        if self.tempIn.temperature > self.tempOut.temperature:
-            return True
-
-        return False
 
 
 
