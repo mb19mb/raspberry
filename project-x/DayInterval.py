@@ -5,8 +5,12 @@ import time
 from datetime import datetime
 from PartitionEntry import PartitionEntry
 
+"""
+Unterteilt einen Tag in n Partitionen
+    - liefert Partition entsprechend der Uhrzeit
+"""
 class DayInterval(object):
-    numberPartitions = 4 # @todo konfigurierbar machen
+    NUMBER_PARTITIONS = 4 # @todo konfigurierbar machen
 
     timestamp = 0
     currentDate = None
@@ -30,15 +34,15 @@ class DayInterval(object):
     """
     """
     def fetchDelta(self):
-        return 60 * 60 * 24 / self.numberPartitions
+        return 60 * 60 * 24 / self.NUMBER_PARTITIONS
 
     """
     """
     def initPartitions(self):
         i = 0
         self.partitions = []
-        while i < self.numberPartitions:
-            self.partitions.append(PartitionEntry())
+        while i < self.NUMBER_PARTITIONS:
+            self.partitions.append(PartitionEntry("2017-01-07")) # @todo
             i+=1
 
     """
@@ -67,5 +71,5 @@ class DayInterval(object):
 
 if __name__ == "__main__":
     d = DayInterval()
-    #print d.getCurrentPartition()
-    d.getWindowOpenInterval()
+    print d.getCurrentPartition()
+    #d.getWindowOpenInterval()
