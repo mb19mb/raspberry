@@ -28,21 +28,39 @@ class PartitionEntry(object):
     def setFileName(self, fileName):
         self.fileName = "./db/%s.xml" % fileName
 
+    """
+    """
     def __init__(self, fileName):
-        #self.fileName = "./db/2017-01-07.xml"
         self.setFileName(fileName)
-        self.loadFromFile()
+        try:
+            d = DayInterval.DayInterval()
+            partition = d.getCurrentPartition()
+            self.initFile(partition)
+        except IOError:
+            self.createPartitionEntry()
+            try:
+                self.initFile(partition)  # 2nd try
+            except IOError:
+                raise Exception("epic fail")
 
     """
     """
-    def loadFromFile(self, partition = 0):
+    def addWindowOpenTime(self, t, partition):
+        xpath = './entries/partition[@number="%s"]/windowOpenTime' % partition
+        e = self.xmlFile.find(xpath)
+        e.text = str(int(e.text) + t)
+        self.saveToFile()
 
+
+    """
+    """
+    def initFile(self, partition):
         self.xmlFile = ElementTree(file=self.fileName)
         xpath = './entries/partition[@number="%s"]' % partition
         for e in self.xmlFile.findall(xpath):
-            self.windowOpenTimeInSeconds    = e.find("windowOpenTime").text
-            self.windowOpenCount            = e.find("windowOpenCount").text
-            self.windowCloseCount           = e.find("windowCloseCount").text
+            self.windowOpenTimeInSeconds = e.find("windowOpenTime").text
+            self.windowOpenCount = e.find("windowOpenCount").text
+            self.windowCloseCount = e.find("windowCloseCount").text
 
     """
     """
@@ -66,6 +84,8 @@ class PartitionEntry(object):
         Erstellt neues PartitionEntryObject und schreibt es auf die Platte
     """
     def createPartitionEntry(self):
+        # FileName setzen
+        self.setFileName(datetime.date.today())
 
         root = Element('root')
 
@@ -73,7 +93,7 @@ class PartitionEntry(object):
         root.append(comment)
 
         date = SubElement(root, 'date')
-        date.text = 'hier das datum des tages'
+        date.text = self.fileName
 
         entries = SubElement(root, 'entries')
 
@@ -92,18 +112,17 @@ class PartitionEntry(object):
         rough_string = tostring(root, 'utf-8')
         rootNode = minidom.parseString(rough_string)
 
-        # FileName setzen
-        self.setFileName(datetime.date.today())
+
         file_handle = open(self.fileName, "wb")
         rootNode.writexml(file_handle, addindent="\t", newl='\n')
         file_handle.close()
 
 
 if __name__ == "__main__":
-    p = PartitionEntry("2017-01-07")
+    p = PartitionEntry(datetime.date.today())
     #p.loadFromFile()
     #p.windowOpenCount = "jjj"
     #p.updatePartition()
     #p.saveToFile()
-    p.createPartitionEntry()
-
+    #p.createPartitionEntry()
+    p.addWindowOpenTime(5, 0)

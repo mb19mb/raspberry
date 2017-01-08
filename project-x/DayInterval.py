@@ -42,7 +42,8 @@ class DayInterval(object):
         i = 0
         self.partitions = []
         while i < self.NUMBER_PARTITIONS:
-            self.partitions.append(PartitionEntry("2017-01-07")) # @todo
+            #self.partitions.append(PartitionEntry("2017-01-07")) # @todo
+            self.partitions.append(None)  # @todo
             i+=1
 
     """
